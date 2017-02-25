@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -N test_script
+#$ -N TEST_SCRIPT
 #$ -q gpu
 #$ -l gpu=1
 #$ -pe gpu-node-cores 6
@@ -46,6 +46,11 @@ echo ""
 echo ""
 echo "=== Running 1 trial of stride ... ==="
 ./stride
+echo ""
+
+echo ""
+echo "=== Running 1 trial of sequential ... ==="
+./sequential
 echo ""
 
 echo ""
