@@ -64,6 +64,11 @@ echo "=== Running 1 trial of unroll ... ==="
 echo ""
 
 echo ""
+echo "=== Running 1 trial of multiple ... ==="
+./multiple
+echo ""
+
+echo ""
 echo "=== Done! ==="
 
 # eof
