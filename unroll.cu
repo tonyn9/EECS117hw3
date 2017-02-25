@@ -93,7 +93,7 @@ kernel4(dtype *g_idata, dtype *g_odata, unsigned int n)
   __syncthreads ();
 
   // for loop takes half -> 0
-  for(unsigned int s = blockDim.x/2; s > 31; s = s >>= 1) {
+  for(unsigned int s = blockDim.x/2; s > 32; s = s >>= 1) {
 
     if (threadIdx.x < s){
       scratch[threadIdx.x] += scratch[threadIdx.x + s];
