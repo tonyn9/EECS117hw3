@@ -73,7 +73,7 @@ kernel3(dtype *g_idata, dtype *g_odata, unsigned int n)
   // we should replace the single load with 2 loads
   // and add first
   if(i < n/2) { //loads the later half
-    scratch[threadIdx.x] = g_idata[i] + g_idata[i+blockDim.x/2]; 
+    scratch[threadIdx.x] = g_idata[i] + g_idata[i+n/2]; 
   } else {
     scratch[threadIdx.x] = 0;
   }
