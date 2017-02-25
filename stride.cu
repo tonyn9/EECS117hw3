@@ -63,7 +63,34 @@ dtype reduce_cpu(dtype *data, int n) {
 __global__ void
 kernel1(dtype *input, dtype *output, unsigned int n)
 {
+  __shared__  dtype scratch[MAX_THREADS];
 
+  unsigned int bid = gridDim.x * blockIdx.y + blockIdx.x;
+  unsigned int i = bid * blockDim.x + threadIdx.x;
+
+  if(i < n) {
+    scratch[threadIdx.x] = input[i]; 
+  } else {
+    scratch[threadIdx.x] = 0;
+  }
+  __syncthreads ();
+
+  // change this block
+  // if statement causes warp divergence
+  // which slows down the program
+  for(unsigned int s = 1; s < blockDim.x; s = s << 1) {
+
+    int index = 2 * s * threadIdx.x;
+
+    if( index < blockDim.x) {
+      scratch[index] += scratch[index + s];
+    }
+    __syncthreads ();
+  }
+
+  if(threadIdx.x == 0) {
+    output[bid] = scratch[0];
+  }
 }
 
 
