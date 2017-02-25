@@ -59,7 +59,7 @@ dtype reduce_cpu(dtype *data, int n) {
 }
 
 // unrolls the last 6 iterations of inner for loop
-__device__ void warpReduce( volatile int* sdata, int tid){
+__device__ void warpReduce( volatile dtype* sdata, int tid){
 	sdata[tid] += sdata[tid + 32];
 	sdata[tid] += sdata[tid + 16];
 	sdata[tid] += sdata[tid + 8];
