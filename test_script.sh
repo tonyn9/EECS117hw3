@@ -59,6 +59,11 @@ echo "=== Running 1 trial of first_add ... ==="
 echo ""
 
 echo ""
+echo "=== Running 1 trial of unroll ... ==="
+./unroll
+echo ""
+
+echo ""
 echo "=== Done! ==="
 
 # eof
