@@ -80,15 +80,16 @@ kernel5(dtype *g_idata, dtype *g_odata, unsigned int n)
   __shared__  dtype scratch[MAX_THREADS];
 
   unsigned int bid = blockIdx.x;
-  unsigned int i = blockIdx.x * (blockSize*2) + threadIdx.x;
-  unsigned int gridSize = blockSize * 2 * gridDim.x;
+  unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+  unsigned int gridSize = blockDim.x * gridDim.x;
 
-  scratch[threadIdx.x] = 0;
+  // initialize its own element
+  scratch[threadIdx.x] = g_idata[i];
 
-  
-  while (i < n){
-	  scratch[threadIdx.x] += g_idata[i] + g_idata[i+blockSize];
-	  i += gridSize;
+  int offset = gridSize;
+  while (i + offset < n){
+	  scratch[threadIdx.x] += g_idata[i + offset];
+	  offset += gridSize;
   }
   __syncthreads ();
 
