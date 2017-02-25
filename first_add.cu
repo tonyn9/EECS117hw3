@@ -62,6 +62,35 @@ dtype reduce_cpu(dtype *data, int n) {
 __global__ void
 kernel3(dtype *g_idata, dtype *g_odata, unsigned int n)
 {
+
+  __shared__  dtype scratch[MAX_THREADS];
+
+  unsigned int bid = gridDim.x * blockIdx.y + blockIdx.x;
+  unsigned int i = bid * blockDim.x + threadIdx.x;
+
+  // previous function had a problem idle threads
+  // blockDim.x/2 means half the thread is at idle when it starts
+  // we should replace the single load with 2 loads
+  // and add first
+  if(i < n/2) { //loads the later half
+    scratch[threadIdx.x] = g_idata[i] + g_idata[i+blockDim.x/2]; 
+  } else {
+    scratch[threadIdx.x] = 0;
+  }
+  __syncthreads ();
+
+  // for loop takes half -> 0
+  for(unsigned int s = blockDim.x/2; s > 0; s = s >>= 1) {
+
+    if (threadIdx.x < s){
+      scratch[threadIdx.x] += scratch[threadIdx.x + s];
+    }
+    __syncthreads ();
+  }
+
+  if(threadIdx.x == 0) {
+    output[bid] = scratch[0];
+  }
 }
 
 
