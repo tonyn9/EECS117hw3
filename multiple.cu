@@ -58,10 +58,57 @@ dtype reduce_cpu(dtype *data, int n) {
     return sum;
 }
 
+// unrolls the last 6 iterations of inner for loop
+__device__ void warpReduce( volatile dtype* sdata, unsigned int tid, unsigned int n){
+	if ( n > 64){
+		sdata[tid] += sdata[tid + 32];
+	}
+	if (n > 32){
+		sdata[tid] += sdata[tid + 16];
+	}
+	sdata[tid] += sdata[tid + 8];
+	sdata[tid] += sdata[tid + 4];
+	sdata[tid] += sdata[tid + 2];
+	sdata[tid] += sdata[tid + 1];
+}
 
+// combines sequential and parallel reduction techniques
+// each thread loads and sums multiple elements into shared memory
 __global__ void
 kernel5(dtype *g_idata, dtype *g_odata, unsigned int n)
 {
+  __shared__  dtype scratch[MAX_THREADS];
+
+  unsigned int bid = blockIdx.x;
+  unsigned int i = blockIdx.x * (blockSize*2) + threadIdx.x;
+  unsigned int gridSize = blockSize * 2 * gridDim.x;
+
+  scratch[threadIdx.x] = 0;
+
+  
+  while (i < n){
+	  scratch[threadIdx.x] += g_idata[i] + g_idata[i+blockSize];
+	  i += gridSize;
+  }
+  __syncthreads ();
+
+  // for loop takes half -> 0
+  for(unsigned int s = blockDim.x/2; s > 32; s = s >>= 1) {
+
+    if (threadIdx.x < s){
+      scratch[threadIdx.x] += scratch[threadIdx.x + s];
+    }
+    __syncthreads ();
+  }
+
+  if(threadIdx.x < 32){ 
+	warpReduce(scratch, threadIdx.x, n);
+  }
+
+  if(threadIdx.x == 0) {
+    g_odata[bid] = scratch[0];
+  }
+
 }
 
 
