@@ -59,7 +59,7 @@ dtype reduce_cpu(dtype *data, int n) {
 }
 
 // unrolls the last 6 iterations of inner for loop
-__device__ void warpReduce( volatile dtype* sdata, int tid){
+__device__ void warpReduce( volatile dtype* sdata, unsigned int tid){
 	sdata[tid] += sdata[tid + 32];
 	sdata[tid] += sdata[tid + 16];
 	sdata[tid] += sdata[tid + 8];
@@ -89,7 +89,7 @@ kernel4(dtype *g_idata, dtype *g_odata, unsigned int n)
   __syncthreads ();
 
   // for loop takes half -> 0
-  for(unsigned int s = blockDim.x/2; s > 32; s = s >>= 1) {
+  for(unsigned int s = blockDim.x/2; s > 31; s = s >>= 1) {
 
     if (threadIdx.x < s){
       scratch[threadIdx.x] += scratch[threadIdx.x + s];
