@@ -3,6 +3,7 @@
 
 #include "cuda_utils.h"
 #include "timer.c"
+#define TILE_SIZE (32 * 32)
 
 typedef float dtype;
 
