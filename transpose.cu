@@ -14,15 +14,14 @@ void matTrans(dtype* AT, dtype* A, int N)
 	/* Fill your code here */
 	int tile_dim = 32;
 	int block_row = 8;
-	__shared__  dtype tile[TILE_SIZE];
-
+	
 	int x = blockIdx.x * tile_dim + threadIdx.x;
 	int y = blockIdx.y * tile_dim + threadIdx.y;
 	int width = gridDim.x * tile_dim;
 
 	//split into 32*32 tiles
 	for(int i = 0; i < tile_dim; i+= block_row){
-		tile[(threadIdx.y + i) * tile_dim + threadIdx.x] = A[(y+i) * width + x];
+		AT[(threadIdx.y + i) * tile_dim + threadIdx.x] = A[(y+i) * width + x];
 	}
 
 	__syncthreads ();
