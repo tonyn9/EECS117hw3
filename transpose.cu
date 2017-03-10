@@ -19,12 +19,11 @@ void matTrans(dtype* AT, dtype* A, int N)
 	int y = blockIdx.y * tile_dim + threadIdx.y;
 	int width = gridDim.x * tile_dim;
 
-	//split into 32*32 tiles
-	for(int i = 0; i < tile_dim; i+= block_row){
-		AT[(threadIdx.y + i) * tile_dim + threadIdx.x] = A[(y+i) * width + x];
+	for (int j = 0; j < tile_dim; j+= block_row)
+	{
+	   AT[x*width + (y+j)]= A[(y+j) * width + x];
 	}
 
-	__syncthreads ();
 
 }
 

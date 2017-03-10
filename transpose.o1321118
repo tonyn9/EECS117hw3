@@ -1,0 +1,32 @@
+Script began: Thu Mar 9 21:30:54 PST 2017
+Node: compute-1-14.local
+Current directory: /data/users/rryuen/EECS117hw3
+
+=== Running 5 trials of transpose ... ===
+*** Trial 1 ***
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+*** Trial 2 ***
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+*** Trial 3 ***
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+*** Trial 4 ***
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+*** Trial 5 ***
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+Timer: gettimeofday
+Timer resolution: ~ 1 us (?)
+
+=== Done! ===
