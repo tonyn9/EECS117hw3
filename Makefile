@@ -28,6 +28,9 @@ unroll$(EXEEXT): unroll.cu $(SRC_COMMON) $(DEPS_COMMON)
 
 multiple$(EXEEXT): multiple.cu $(SRC_COMMON) $(DEPS_COMMON)
 	$(NVCC) multiple.cu $(SRC_COMMON) -o $@
+	
+transpose$(EXEEXT) : transpose.cu $(SRC_COMMON) $(DEPS_COMMON)
+	$(NVCC) transpose.cu $(SRC_COMMON) -o $@
 
 clean:
 	rm -f $(TARGETS)
