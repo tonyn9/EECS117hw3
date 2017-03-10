@@ -68,19 +68,38 @@ gpuTranspose (dtype* A, dtype* AT, int N)
 {
   struct stopwatch_t* timer = NULL;
   long double t_gpu;
-
+  dtype *d_idata, *d_odata;	
 	
   /* Setup timers */
   stopwatch_init ();
   timer = stopwatch_create ();
+  
+
+	/* run your kernel here */
+  int num_block = 1 + (N*N)/32;
+  int num_threads = 32;
+    /* GPU kernel */
+  dim3 gb(num_block, 1, 1);
+  dim3 tb(num_threads, 1, 1);
+
+  CUDA_CHECK_ERROR (cudaMalloc (&d_idata, N*N*sizeof(dtype)));
+  CUDA_CHECK_ERROR (cudaMalloc (&d_odata, N*N* sizeof (dtype)));
+
+  CUDA_CHECK_ERROR (cudaMemcpy (d_idata, A, N*N * sizeof (dtype), 
+				cudaMemcpyHostToDevice));
+
 
   stopwatch_start (timer);
-	/* run your kernel here */
+  matTrans <<<gb, tb>>> (d_odata, d_idata, N);
+
 
   cudaThreadSynchronize ();
   t_gpu = stopwatch_stop (timer);
   fprintf (stderr, "GPU transpose: %Lg secs ==> %Lg billion elements/second\n",
            t_gpu, (N * N) / t_gpu * 1e-9 );
+
+   /* copy result back from GPU */
+  CUDA_CHECK_ERROR (cudaMemcpy (AT, d_odata, N*N*sizeof (dtype),cudaMemcpyDeviceToHost));;
 
 }
 
