@@ -8,8 +8,22 @@ typedef float dtype;
 
 
 __global__ 
-void matTrans(dtype* AT, dtype* A, int N)  {
+void matTrans(dtype* AT, dtype* A, int N)  
+{
 	/* Fill your code here */
+	int tile_dim = 32;
+	int block_row = 8;
+	int x = blockIdx.x * TILE_DIM + threadIdx.x;
+	int y = blockIdx.y * TILE_DIM + threadIdx.y;
+	int width = gridDim.x * TILE_DIM;
+	
+	for(int i = 0; i < TILE_DIM; i+= block_row)
+	{
+		tile[(threadIdx.y + i) * TILE_DIM + threadIdx.x] = A[(y+i) * width + x];
+	}
+
+	__syncthreads ();
+	
 
 }
 
